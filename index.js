@@ -4,7 +4,7 @@ const app = express();
 const port = 2620;
 
 // USING EXPRESS ROUTER
-app.use("/", require("./routes/index"));
+app.use("/", require("./routes"));
 
 app.listen(port, function (err) {
   if (err) {
