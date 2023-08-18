@@ -6,6 +6,10 @@ const port = 2620;
 // USING EXPRESS ROUTER
 app.use("/", require("./routes"));
 
+// SETTING THE VIEW ENGINE
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
 app.listen(port, function (err) {
   if (err) {
     console.log("Oops error in running the sever:", err);
