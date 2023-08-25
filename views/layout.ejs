@@ -5,8 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title%></title>
+    <link rel="stylesheet" href="/css/layout.css" />
+    <!-- LINK TAG WILL BE EXTRACTED AND PLACED HERE -->
+    <%- style %>
   </head>
   <body>
-    <h1>Users / <%= title %></h1>
+    <%- include("_header")%> <%- body %> <%- include("_footer")%>
+    <!-- SCRIPT TAG WILL BE EXTRACTED AND PLACED HERE -->
+    <%- script%>
   </body>
 </html>
