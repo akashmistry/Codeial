@@ -8,15 +8,12 @@ const app = express();
 const port = 2620;
 
 const db = require("./config/mongoose");
-app.use(expressLayouts);
 
-// PATH FOR ASSETS
-app.use(express.static(path.join(__dirname, "assets")));
-
-// EXTRACTING THE LINK AND SCRIPT TAGS
-// PUTTING IT IN THE LAYOUT HEAD AND BOTTOM OF BODY
-app.set("layout extractStyles", true);
-app.set("layout extractScripts", true);
+// USED FOR SESSION COOKIE
+const session = require("express-session");
+const passport = require("passport");
+const passportLocal = require("./config/passport-local-strategy");
+const MongoStore = require("connect-mongo");
 
 // READING THROUGH THE POST REQUEST
 app.use(express.urlencoded({ extended: true }));
@@ -24,10 +21,56 @@ app.use(express.urlencoded({ extended: true }));
 // USING THE COOKIE PARSER
 app.use(cookieParser());
 
+// PATH FOR ASSETS
+app.use(express.static(path.join(__dirname, "assets")));
+
+app.use(expressLayouts);
+
+// EXTRACTING THE LINK AND SCRIPT TAGS
+// PUTTING IT IN THE LAYOUT HEAD AND BOTTOM OF BODY
+app.set("layout extractStyles", true);
+app.set("layout extractScripts", true);
+
 // SETTING THE VIEW ENGINE
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
+// MONGO STORE IS USED TO STORE THE SESSION COOKIE IN THE DB
+app.use(
+  session({
+    name: "codeial",
+    // TODO CHANGE THE SECRET BEFORE DEPLOYMENT IN PRODUCTION MODE
+    secret: "blahsomething",
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 1000 * 60 * 100,
+    },
+    store: MongoStore.create(
+      {
+        mongoUrl: "mongodb://localhost/codeial",
+        autoRemove: "disabled",
+      },
+      function (err) {
+        console.log(err || "connect-mongo setup ok");
+      }
+    ),
+    // store: new MongoStore(
+    //   {
+    //     mongooseConnection: db,
+    //     autoRemove: "disabled",
+    //   },
+    //   function (err) {
+    //     console.log(err || "connect-mongo setup ok");
+    //   }
+    // ),
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
 // INDEX ROUTE
 app.use("/", require("./routes"));
 
