@@ -6,11 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title%></title>
     <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/footer.css" />
     <!-- LINK TAG WILL BE EXTRACTED AND PLACED HERE -->
     <%- style %>
   </head>
   <body>
-    <%- include("_header")%> <%- body %> <%- include("_footer")%>
+    <%- include("_header")%>
+    <main id="layout-main"><%- body %></main>
+    <%- include("_footer")%>
     <!-- SCRIPT TAG WILL BE EXTRACTED AND PLACED HERE -->
     <%- script%>
   </body>
