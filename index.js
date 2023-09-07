@@ -67,15 +67,6 @@ app.use(
         console.log(err || "connect-mongo setup ok");
       }
     ),
-    // store: new MongoStore(
-    //   {
-    //     mongooseConnection: db,
-    //     autoRemove: "disabled",
-    //   },
-    //   function (err) {
-    //     console.log(err || "connect-mongo setup ok");
-    //   }
-    // ),
   })
 );
 

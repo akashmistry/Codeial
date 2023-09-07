@@ -1,0 +1,32 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  background-color: antiquewhite;
+  font-family: Helvetica, sans-serif;
+}
+
+header h3 {
+  margin-left: 20px;
+  font-weight: bolder;
+}
+
+header h3 a {
+  text-decoration: none;
+  color: black;
+}
+
+header ul {
+  display: flex;
+  list-style: none;
+}
+
+header ul li {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: black;
+}
