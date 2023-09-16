@@ -21,5 +21,7 @@ module.exports.create = function (req, res) {
           });
       }
     })
-    .catch((err) => {});
+    .catch((err) => {
+      console.log("Error in finding post");
+    });
 };
