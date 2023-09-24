@@ -1,68 +1,64 @@
 const User = require("../models/user");
 
+// HOME PAGE CONTROLLER
 module.exports.profile = function (req, res) {
+  return res.render("user_profile", {
+    title: "user profile",
+  });
+};
 
-    // return res.end("<h1>User Profile</h1>")
-    return res.render('user_profile', {
-        title: "user profile",
-    })
-}
-
-// render the sign up page
+// USER SIGN UP CONTROLLER
 module.exports.signUp = function (req, res) {
-    if (req.isAuthenticated()) {
-        return res.redirect("/users/profile");
-    }
-    return res.render('user_sign_up', {
-        title: "Codial sign up",
-    })
-}
+  if (req.isAuthenticated()) {
+    return res.redirect("/users/profile");
+  }
+  return res.render("user_sign_up", {
+    title: "Codial sign up",
+  });
+};
 
-// render the sign in page
+// USER SIGN IN CONTROLLER
 module.exports.signIn = function (req, res) {
-    if (req.isAuthenticated()) {
-        return res.redirect("/users/profile");
-    }
-    return res.render('user_sign_in', {
-        title: "Codial sign in",
-    })
-}
+  if (req.isAuthenticated()) {
+    return res.redirect("/users/profile");
+  }
+  return res.render("user_sign_in", {
+    title: "Codial sign in",
+  });
+};
 
-// get the sign up details
+// GET SIGN UP DATA
 module.exports.create = async function (req, res) {
-    if (req.body.password !== req.body.confirm_password) {
-        return res.redirect('back');
+  if (req.body.password !== req.body.confirm_password) {
+    return res.redirect("back");
+  }
+
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      // IF USER EXISTS
+      return res.redirect("back");
     }
 
-    try {
-        const user = await User.findOne({ email: req.body.email });
-        if (user) {
-            // User with the same email already exists
-            return res.redirect('back');
-        }
+    await User.create(req.body);
+    return res.redirect("/users/sign-in");
+  } catch (err) {
+    console.log("Error in creating user:", err);
+    return res.redirect("back");
+  }
+};
 
-        await User.create(req.body);
-        return res.redirect('/users/sign-in');
-
-    } catch (err) {
-        console.log('Error in creating user:', err);
-        return res.redirect('back');
-    }
-}
-
-
+// SIGN IN AND CREATE SESSION FOR THE USER
 module.exports.createSession = function (req, res) {
-    return res.redirect('/');
-
-}
+  return res.redirect("/");
+};
 
 module.exports.destroySession = function (req, res) {
-
-    req.logout(function (err) {
-        if (err) {
-            // Handle any potential errors
-            console.error(err);
-        }
-    })
-    return res.redirect('/')
-}
+  req.logout(function (err) {
+    if (err) {
+      // Handle any potential errors
+      console.error(err);
+    }
+  });
+  return res.redirect("/");
+};

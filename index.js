@@ -1,9 +1,10 @@
 // REQUIRING THE FRAMEWORKS
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 require("dotenv").config();
 const app = express();
-const port = 8000;
+const port = 2620;
 const expressLayouts = require("express-ejs-layouts");
 const db = require("./config/mongoose");
 
@@ -23,35 +24,35 @@ app.use(
     prefix: "/css",
   })
 );
+
 // READING THROUGH THE POST REQUEST
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.urlencoded());
 // USING THE COOKIE PARSER
-
 app.use(cookieParser());
 
 // PATH FOR ASSETS
-
-app.use(express.static("./assets"));
+app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(expressLayouts);
 
-// extract style and script from sub pages into layout
+// EXTRACTING THE LINK AND SCRIPT TAGS
+// PUTTING IT IN THE LAYOUT HEAD AND BOTTOM OF BODY
 app.set("layout extractStyles", true);
 app.set("layout extractScripts", true);
 
-// setup view engine
+// SETTING THE VIEW ENGINE
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-// mongo store is user to stroe session cookie in db
+// MONGO STORE IS USED TO STORE THE SESSION COOKIE IN THE DB
 app.use(
   session({
     name: "codeial",
-    // TODO change the secret before deployment in production mode
+    // TODO CHANGE THE SECRET BEFORE DEPLOYMENT IN PRODUCTION MODE
     secret: "blahsomething",
-    saveUninitialized: false, //if user is not login then dont't save , use data
-    resave: false, // id data not change then don't save gain and again
+    saveUninitialized: false,
+    resave: false,
     cookie: {
       maxAge: 1000 * 60 * 100,
     },
@@ -70,15 +71,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//whwnever any resuqst coming it is will check this setaythenticaedUser function
 app.use(passport.setAuthenticatedUser);
 
-// use express router
+// INDEX ROUTE
 app.use("/", require("./routes"));
 
 app.listen(port, (err) => {
   if (err) {
-    console.log(err);
+    console.log("Oops error in running the sever:", err);
+    return;
   }
-  console.log(`server is running on port ${port}`);
+  console.log("🔥Firing up the Express server on: ", port, "🤙🏻");
 });
