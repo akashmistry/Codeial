@@ -1,20 +1,17 @@
 // REQUIRING THE FRAMEWORKS
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const path = require("path");
-const expressLayouts = require("express-ejs-layouts");
-
+require("dotenv").config();
 const app = express();
-const port = 2620;
-
+const port = 8000;
+const expressLayouts = require("express-ejs-layouts");
 const db = require("./config/mongoose");
 
 // USED FOR SESSION COOKIE
 const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("./config/passport-local-strategy");
-const MongoStore = require("connect-mongo");
-
+const MongoStore = require("connect-mongo")(session);
 const sassMiddleware = require("node-sass-middleware");
 
 app.use(
@@ -22,49 +19,49 @@ app.use(
     src: "./assets/scss",
     dest: "./assets/css",
     debug: true,
-    outputStyle: "expanded",
+    outputStyle: "extended",
     prefix: "/css",
   })
 );
-
 // READING THROUGH THE POST REQUEST
-app.use(express.urlencoded({ extended: true }));
 
+app.use(express.urlencoded());
 // USING THE COOKIE PARSER
+
 app.use(cookieParser());
 
 // PATH FOR ASSETS
-app.use(express.static(path.join(__dirname, "assets")));
+
+app.use(express.static("./assets"));
 
 app.use(expressLayouts);
 
-// EXTRACTING THE LINK AND SCRIPT TAGS
-// PUTTING IT IN THE LAYOUT HEAD AND BOTTOM OF BODY
+// extract style and script from sub pages into layout
 app.set("layout extractStyles", true);
 app.set("layout extractScripts", true);
 
-// SETTING THE VIEW ENGINE
+// setup view engine
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-// MONGO STORE IS USED TO STORE THE SESSION COOKIE IN THE DB
+// mongo store is user to stroe session cookie in db
 app.use(
   session({
     name: "codeial",
-    // TODO CHANGE THE SECRET BEFORE DEPLOYMENT IN PRODUCTION MODE
+    // TODO change the secret before deployment in production mode
     secret: "blahsomething",
-    saveUninitialized: false,
-    resave: false,
+    saveUninitialized: false, //if user is not login then dont't save , use data
+    resave: false, // id data not change then don't save gain and again
     cookie: {
       maxAge: 1000 * 60 * 100,
     },
-    store: MongoStore.create(
+    store: new MongoStore(
       {
-        mongoUrl: "mongodb://localhost/codeial",
+        mongooseConnection: db,
         autoRemove: "disabled",
       },
       function (err) {
-        console.log(err || "connect-mongo setup ok");
+        console.log(err || "connct-mongodb setup ok");
       }
     ),
   })
@@ -73,14 +70,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//whwnever any resuqst coming it is will check this setaythenticaedUser function
 app.use(passport.setAuthenticatedUser);
-// INDEX ROUTE
+
+// use express router
 app.use("/", require("./routes"));
 
-app.listen(port, function (err) {
+app.listen(port, (err) => {
   if (err) {
-    console.log("Oops error in running the sever:", err);
-    return;
+    console.log(err);
   }
-  console.log("🔥Firing up the Express server on: ", port, "🤙🏻");
+  console.log(`server is running on port ${port}`);
 });

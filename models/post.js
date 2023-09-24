@@ -8,9 +8,9 @@ const postSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // give model name
     },
-    // INCLUDE THE ARRAY OF IDs OF ALL COMMENTS IN THIS POST SCHEMA ITSELF
+    // include the array of ids of all comment in this post schema itself
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,5 +24,4 @@ const postSchema = new mongoose.Schema(
 );
 
 const Post = mongoose.model("Post", postSchema);
-
 module.exports = Post;

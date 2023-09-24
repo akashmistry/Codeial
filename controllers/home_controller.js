@@ -1,29 +1,28 @@
+// in large scale project controller is set of action
 const Post = require("../models/post");
 
-module.exports.home = function (req, res) {
-  // COOKIES WILL COME AS REQ
-  console.log(req.cookies);
-
-  // COOKIES WILL GO AS RES
-  res.cookie("something", 20);
-
-  // Post.find({});
-
-  Post.find({})
-    .populate("user")
-    .populate({
-      path: "comments",
-      populate: {
-        path: "user",
-      },
-    })
-    .then((posts) => {
-      return res.render("home", {
-        title: "Home",
-        posts: posts,
-      });
-    })
-    .catch((err) => {
-      console.log("Error in fetching the posts");
+module.exports.home = async function (req, res) {
+  // //  return res.end("<h1>Epress is up for Codeial</h1>")
+  // return res.render('home',{
+  //     title: "Home",
+  // })
+  try {
+    //   const posts =   await Post.find({});
+    //populater user for each
+    const posts = await Post.find({})
+      .populate("user")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+        },
+      })
+      .exec();
+    return res.render("home", {
+      title: "Codeial | Home",
+      posts: posts,
     });
+  } catch (err) {
+    console.log(err);
+  }
 };

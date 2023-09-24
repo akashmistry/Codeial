@@ -1,70 +1,68 @@
-const User = require("../models/user.js");
-const router = require("../routes");
+const User = require("../models/user");
 
-// HOME PAGE CONTROLLER
 module.exports.profile = function (req, res) {
-  return res.render("user_profile", {
-    title: "Profile",
-  });
-};
 
-// USER SIGN UP CONTROLLER
-module.exports.signUp = function (req, res) {
-  if (req.isAuthenticated()) {
-    return res.redirect("/users/profile");
-  }
-  return res.render("user_sign_up", {
-    title: "Codeial| Sign up",
-  });
-};
-
-// USER SIGN IN CONTROLLER
-module.exports.signIn = function (req, res) {
-  if (req.isAuthenticated()) {
-    return res.redirect("/users/profile");
-  }
-  return res.render("user_sign_in", {
-    title: "Codeial| Sign in",
-  });
-};
-
-// GET SIGN UP DATA
-module.exports.create = function (req, res) {
-  console.log(req.body);
-  if (req.body.password != req.body.confirm_password) {
-    console.log("WRONG PASS");
-    return res.redirect("back");
-  }
-
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        User.create(req.body)
-          .then((user) => {
-            res.redirect("/users/sign-in");
-          })
-          .catch((err) => {
-            console.log("Error in fining user in signing up");
-          });
-      } else {
-        res.redirect("back");
-      }
+    // return res.end("<h1>User Profile</h1>")
+    return res.render('user_profile', {
+        title: "user profile",
     })
-    .catch((err) => {
-      console.log("Error in fining user in signing up");
-    });
-};
+}
 
-// SIGN IN AND CREATE SESSION FOR THE USER
+// render the sign up page
+module.exports.signUp = function (req, res) {
+    if (req.isAuthenticated()) {
+        return res.redirect("/users/profile");
+    }
+    return res.render('user_sign_up', {
+        title: "Codial sign up",
+    })
+}
+
+// render the sign in page
+module.exports.signIn = function (req, res) {
+    if (req.isAuthenticated()) {
+        return res.redirect("/users/profile");
+    }
+    return res.render('user_sign_in', {
+        title: "Codial sign in",
+    })
+}
+
+// get the sign up details
+module.exports.create = async function (req, res) {
+    if (req.body.password !== req.body.confirm_password) {
+        return res.redirect('back');
+    }
+
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (user) {
+            // User with the same email already exists
+            return res.redirect('back');
+        }
+
+        await User.create(req.body);
+        return res.redirect('/users/sign-in');
+
+    } catch (err) {
+        console.log('Error in creating user:', err);
+        return res.redirect('back');
+    }
+}
+
+
 module.exports.createSession = function (req, res) {
-  return res.redirect("/");
-};
+    return res.redirect('/');
+
+}
 
 module.exports.destroySession = function (req, res) {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    return res.redirect("/");
-  });
-};
+
+    req.logout(function (err) {
+        if (err) {
+            // Handle any potential errors
+            console.error(err);
+        }
+    })
+    return res.redirect('/')
+}

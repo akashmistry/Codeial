@@ -1,27 +1,21 @@
-const Comment = require("../models/comment");
-
+const Comment = require("../models/comments");
 const Post = require("../models/post");
+module.exports.create = async function (req, res) {
+    try {
+        const post = await Post.findById(req.body.post);
+        if (post) {
+            const comment = await Comment.create({
+                content: req.body.content,
+                post: req.body.post,
+                user: req.user._id,
+            });
 
-module.exports.create = function (req, res) {
-  Post.findById(req.body.post)
-    .then((post) => {
-      if (post) {
-        Comment.create({
-          content: req.body.content,
-          post: req.body.post,
-          user: req.user._id,
-        })
-          .then((comment) => {
             post.comments.push(comment);
-            post.save();
-            res.redirect("/");
-          })
-          .catch((err) => {
-            console.log("Error in creating comment");
-          });
-      }
-    })
-    .catch((err) => {
-      console.log("Error in finding post");
-    });
-};
+            await post.save(); // it will save data as the final version in the database
+
+            res.redirect('/');
+        }
+    } catch (err) {
+      console.log(err);
+    }
+}

@@ -1,16 +1,17 @@
 const express = require("express");
+const Router = express.Router();
+const homeController  =require("../controllers/home_controller");
 
-// ROUTE HANDLER
-const router = express.Router();
-const homeController = require("../controllers/home_controller");
-console.log("Router Loaded");
+console.log("router loaded");
 
-router.get("/", homeController.home);
-router.use("/users", require("./users"));
-router.use("/posts", require("./posts"));
-router.use("/comments", require("./comments"));
+// similar to app.use we call contorller here
+Router.get("/", homeController.home);
 
-// FOR ANY FURTHER ROUTES, ACCESS FROM HERE
-// router.use("/routerName", require("./routerFile"))
+// for any further router access from here
+Router.use("/users",require("./users"))
 
-module.exports = router;
+Router.use("/posts",require("./posts"));
+
+Router.use("/comments", require("./comments"));
+
+module.exports = Router;    
