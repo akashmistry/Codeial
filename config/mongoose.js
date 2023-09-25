@@ -4,10 +4,10 @@ mongoose.connect("mongodb://localhost:27017/codeial");
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "Error connecting to MOngoDB"));
+db.on("error", console.error.bind(console, "Error connectiing to DB"));
 
-db.once("open", () => {
-  console.log("connected to mongoDB");
+db.once("open", function () {
+  console.log("Successfully connected to the database 👻");
 });
 
 module.exports = db;
