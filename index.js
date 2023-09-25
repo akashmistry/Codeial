@@ -7,6 +7,8 @@ const app = express();
 const port = 2620;
 const expressLayouts = require("express-ejs-layouts");
 const db = require("./config/mongoose");
+const flash = require("connect-flash");
+const customMiddleware = require("./config/middleware");
 
 // USED FOR SESSION COOKIE
 const session = require("express-session");
@@ -72,6 +74,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.setAuthenticatedUser);
+
+app.use(flash());
+app.use(customMiddleware.setFlash);
 
 // INDEX ROUTE
 app.use("/", require("./routes"));
