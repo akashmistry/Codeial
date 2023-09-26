@@ -36,6 +36,8 @@ app.use(cookieParser());
 // PATH FOR ASSETS
 app.use(express.static(path.join(__dirname, "assets")));
 
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
 app.use(expressLayouts);
 
 // EXTRACTING THE LINK AND SCRIPT TAGS

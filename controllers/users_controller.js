@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const fs = require("fs");
+const path = require("path");
 
 // HOME PAGE CONTROLLER
 module.exports.profile = async function (req, res) {
@@ -12,6 +14,18 @@ module.exports.profile = async function (req, res) {
 // UPDATE PROFILE CONTROLLER
 
 module.exports.update = async function (req, res) {
+  // try
+  // {
+  //     if (req.user.id == req.params.id) {
+  //         const user = await User.findByIdAndUpdate(req.params.id, req.body);
+  //         return res.redirect("back");
+  //     }else{
+  //         return res.statu9s(401).send("Unauthorized");
+  //     }
+  // } catch (err) {
+  //     console.log(err);
+  // }
+
   if (req.user.id == req.params.id) {
     try {
       const user = await User.findById(req.params.id);
