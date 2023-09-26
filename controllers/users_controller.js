@@ -14,18 +14,6 @@ module.exports.profile = async function (req, res) {
 // UPDATE PROFILE CONTROLLER
 
 module.exports.update = async function (req, res) {
-  // try
-  // {
-  //     if (req.user.id == req.params.id) {
-  //         const user = await User.findByIdAndUpdate(req.params.id, req.body);
-  //         return res.redirect("back");
-  //     }else{
-  //         return res.statu9s(401).send("Unauthorized");
-  //     }
-  // } catch (err) {
-  //     console.log(err);
-  // }
-
   if (req.user.id == req.params.id) {
     try {
       const user = await User.findById(req.params.id);
@@ -37,14 +25,16 @@ module.exports.update = async function (req, res) {
         user.name = req.body.name;
         user.email = req.body.email;
         if (req.file) {
+          if (user.avatar) {
+            fs.unlinkSync(path.join(__dirname, "..", user.avatar));
+          }
           // this is savaing a path of the uploaded file into the avatar file in the user
           //avatarPath is static var declared inusr model
           user.avatar = User.avatarPath + "/" + req.file.filename;
         }
         user.save();
+        return res.redirect("back");
       });
-
-      return res.redirect("back");
     } catch (err) {
       console.log(err);
       req.flash("error", err);
