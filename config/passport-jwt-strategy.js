@@ -11,9 +11,9 @@ let opts = {
 };
 
 passport.use(
-  new JWTStrategy(opts, function (jwtPayLoad, done) {
+  new JWTStrategy(opts, async function (jwtPayLoad, done) {
     try {
-      const user = User.findById(jwtPayLoad._id);
+      const user = await User.findById(jwtPayLoad._id);
       if (user) {
         return done(null, user);
       } else {
