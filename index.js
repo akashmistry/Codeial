@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 require("dotenv").config();
 const app = express();
-const port = 2620;
+const PORT = process.env.PORT || 2620;
 const expressLayouts = require("express-ejs-layouts");
 const db = require("./config/mongoose");
 const flash = require("connect-flash");
@@ -85,10 +85,10 @@ app.use(customMiddleware.setFlash);
 // INDEX ROUTE
 app.use("/", require("./routes"));
 
-app.listen(port, (err) => {
+app.listen(PORT, (err) => {
   if (err) {
     console.log("Oops error in running the sever:", err);
     return;
   }
-  console.log("🔥Firing up the Express server on: ", port, "🤙🏻");
+  console.log("🔥Firing up the Express server on: ", PORT, "🤙🏻");
 });
